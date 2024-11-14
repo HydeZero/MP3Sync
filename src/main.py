@@ -16,6 +16,13 @@ try:
 except Exception as e:
     print("PyDub was either not found or was unable to be imported. MP3 conversion will not be able to be used.")
     print(e)
+try:
+    from mutagen.flac import FLAC
+    from mutagen.mp3 import MP3
+    from mutagen.easyid3 import EasyID3
+except Exception as e:
+    print("mutagen Not Found. Disabling conversion... (mutagen can get and write metadata from/to files)")
+    isPydub = False
 
 home=os.environ['HOME']
 
@@ -24,7 +31,7 @@ if (input(f"Is this your music library? {home}/Music/ [Y/n]").lower() != "n"):
 
 print("TYPE THE DIRECTORY WHERE YOUR MP3 PLAYER IS MOUNTED. WE WILL HANDLE EVERYTHING FROM HERE.")
 
-mp3MountDir = "/home/zachary/Coding/Python/MP3Sync/testPlayer"
+mp3MountDir = input("FULL DIRECTORY TO MP3 PLAYER MOUNT POINT (/using/this/directory/structure/): ")
 
 print("Searching for files... Please hold...")
 
@@ -88,8 +95,22 @@ if isPydub:
                 
                 file_name = file_path.name.replace(file_path.suffix, "") + ".mp3"
 
-                mp3Editor = mp3TagEditor.MP3TagYourSong(save_dir + file_name)
+                source_metadata = FLAC(file)
 
-                full_name = save_dir + file_name
+                output_metadata = EasyID3(save_dir + file_name)
+                
+                # Copy the main data over (album, title, artist, release, track number, etc.)
 
-                mp3Editor.setSongTitle("IT WORKS YAY")
+                output_metadata["title"] = source_metadata["TITLE"]
+
+                output_metadata["album"] = source_metadata["ALBUM"]
+
+                output_metadata["tracknumber"] = source_metadata["TRACKNUMBER"]
+
+                output_metadata["artist"] = source_metadata["ARTIST"]
+
+                output_metadata["date"] = source_metadata["YEAR_OF_RELEASE"] # is this correct i honestly dont know
+
+                output_metadata["genre"] = source_metadata["GENRE"]
+
+                output_metadata.save() # we're done here

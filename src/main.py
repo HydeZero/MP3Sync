@@ -67,6 +67,12 @@ for director in hostDirects:
 
 print(files)
 
+try:
+    os.mkdir(mp3MountDir + "/" + "Music")
+    mp3MountDir = mp3MountDir + "/" + "Music"
+except:
+    mp3MountDir = mp3MountDir + "/" + "Music"
+
 if isPydub:
     if input("Convert files to MP3 format? This may take a while, depending on the processing speed. [y/N] ").lower() == "y":
         for file in files:
@@ -81,7 +87,7 @@ if isPydub:
                 
                 album_dir = path_as_str.split("/")[-2]
 
-                if not os.path.isdir(mp3MountDir + "/" + artist_dir + "/" + album_dir):
+                if not os.path.isdir(mp3MountDir +  "/" + artist_dir + "/" + album_dir):
                     os.mkdir(mp3MountDir + "/" + artist_dir)
                     os.mkdir(mp3MountDir + "/" + artist_dir + "/" + album_dir)
 
@@ -108,7 +114,7 @@ if isPydub:
 
                 output_metadata["artist"] = source_metadata["ARTIST"]
 
-                output_metadata["date"] = source_metadata["YEAR_OF_RELEASE"] # is this correct i honestly dont know
+                output_metadata["date"] = source_metadata["DATE"] # is this correct i honestly dont know
 
                 output_metadata["genre"] = source_metadata["GENRE"]
 

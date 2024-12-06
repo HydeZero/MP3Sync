@@ -11,4 +11,4 @@ A copy of ffmpeg 7.1 for Windows is included with this program, built by [gyan.d
 
 This copy of ffmpeg 7.1 only will be run if the platform is Windows and ffmpeg isn't installed via `winget`, `scoop`, or `choco`. A copy of the source code at time of release is avaliable [here](https://github.com/FFmpeg/FFmpeg/commit/b08d7969c5).
 
-
+You will need to move FFMPEG into the root of your C:\ drive, then add C:\ffmpeg\bin to your system path. PyDub will recognize it then.

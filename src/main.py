@@ -1,13 +1,27 @@
 import os
+import platform
 import pdb
+
+# Detect pathlib. If not there, halt.
 
 try:
     from pathlib import PurePath
 except Exception as e:
     print("UNABLE TO GET pathlib. Quitting...")
     print(e)
+    quit()
 
 isPydub = False
+
+if (platform.system() == "Linux"):
+    home=os.environ['HOME']
+elif (platform.system() == "Windows"):
+    home=os.environ['UserProfile'].replace("\\","/")
+
+print(home)
+
+# Get (optional) pydub.
+# TODO: See if conversion works without 
 
 try:
     from pydub import AudioSegment
@@ -23,10 +37,12 @@ except Exception as e:
     print("mutagen Not Found. Disabling conversion... (mutagen can get and write metadata from/to files)")
     isPydub = False
 
-home=os.environ['HOME']
-
 if (input(f"Is this your music library? {home}/Music/ [Y/n]").lower() != "n"):
     musicLibrary = home+"/Music/"
+
+print("Type any directories you want to exclude, separated by commas.")
+
+dirToExclude = input().strip().split(",")
 
 print("TYPE THE DIRECTORY WHERE YOUR MP3 PLAYER IS MOUNTED. WE WILL HANDLE EVERYTHING FROM HERE.")
 
@@ -39,11 +55,13 @@ acceptableExtensions = ["mp3", "flac", "m4a"]
 directs = []
 def getDirs(direct):
     for item in os.listdir(direct):
-        try:
-            if item.split(".")[1] != "???":
-                pass
-        except:
-            directs.append(item)
+        print(item)
+        if item not in dirToExclude:
+            try:
+                if item.split(".")[1] != "???":
+                    pass
+            except:
+                directs.append(item)
 
 getDirs(musicLibrary)
 
@@ -114,8 +132,9 @@ if isPydub:
 
                 output_metadata["artist"] = source_metadata["ARTIST"]
 
-                output_metadata["date"] = source_metadata["DATE"] # is this correct i honestly dont know
+                output_metadata["date"] = source_metadata["DATE"]
 
                 output_metadata["genre"] = source_metadata["GENRE"]
+
 
                 output_metadata.save() # we're done here
